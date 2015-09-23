@@ -23,12 +23,15 @@ def main():
     NeighborsCount = []
     trainScores = []
     testScores = []
+
+for weights in ['uniform', 'distance']:
     for i in range(1,500):
-        clf = KNeighborsClassifier(n_neighbors=i, algorithm='ball_tree').fit(X_train,Y_train)
+        clf = KNeighborsClassifier(n_neighbors=i, algorithm='ball_tree',weights=weights).fit(X_train,Y_train)
         NeighborsCount.append(i)
         trainScores.append(clf.score(X_train,Y_train))
         testScores.append(clf.score(X_test,Y_test))
 
+    #Plotear lo q corresponda
     plt.figure(1)
     plt.plot(NeighborsCount, trainScores)
     plt.plot(NeighborsCount, testScores)
@@ -42,17 +45,20 @@ def main():
     NeighborsCount = []
     trainScores = []
     testScores = []
-    for i in range(1,500):
-        clf = KNeighborsClassifier  (n_neighbors=i, algorithm='ball_tree').fit(X_train,Y_train_with_noise)
-        NeighborsCount.append(i)
-        trainScores.append(clf.score(X_train,Y_train))
-        testScores.append(clf.score(X_test,Y_test))
+    for cant_noise_var in [2,5,10,20]
+        #Agregar Variables random
+        for i in range(1,500):
+            clf = KNeighborsClassifier  (n_neighbors=i, algorithm='ball_tree').fit(X_train,Y_train_with_noise)
+            NeighborsCount.append(i)
+            trainScores.append(clf.score(X_train,Y_train))
+            testScores.append(clf.score(X_test,Y_test))
 
-    plt.figure(2)
-    plt.plot(NeighborsCount, trainScores)
-    plt.plot(NeighborsCount, testScores)
-    plt.title(r"10 variables random")
-    plt.show()
+        #Plotear lo q corresponda
+        plt.figure(2)
+        plt.plot(NeighborsCount, trainScores)
+        plt.plot(NeighborsCount, testScores)
+        plt.title(r"10 variables random")
+        plt.show()
 
 if __name__ == '__main__':
     main()
