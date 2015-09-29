@@ -22,7 +22,7 @@ def main():
     dataset = le.transform(dataset)
     X = dataset[:,0:6]
     Y = dataset[:,6]
-    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.3, random_state=0)
+    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2, random_state=0)
     
 
     trainScores = {}
