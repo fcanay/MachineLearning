@@ -9,20 +9,22 @@ import random as rn
 
 def main():
 
-    NeighborsCount = range(1,50,1)
+    NeighborsCount = range(1,600,20)
     random_start = 0
-    random_end = 10
+    random_end = 100000
     
-    url = "http://archive.ics.uci.edu/ml/machine-learning-databases/car/car.data"
+    url = "http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data"
     raw_data = urllib.urlopen(url)
     dataset = np.loadtxt(raw_data, dtype="string", delimiter=",")
-    le = preprocessing.LabelEncoder()
-    le.fit(["vhigh","high","med","low","5more","more","small","big","2","3","4","unacc","acc","good","vgood"])
+    #le = preprocessing.LabelEncoder()
+    #le.fit(["vhigh","high","med","low","5more","more","small","big","2","3","4","unacc","acc","good","vgood"])
 
-    dataset = le.transform(dataset)
-    X = dataset[:,0:6]
-    Y = dataset[:,6]
-    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2, random_state=0)
+    #dataset = le.transform(dataset)
+
+    X = dataset[:,0:8]
+    #X = preprocessing.normalize(Z,copy=True)
+    Y = dataset[:,8]
+    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2 )#,random_state=0)
     
 
     trainScores = {}
@@ -30,8 +32,8 @@ def main():
     plt.figure(1)
     plt.title(r"0% ruido")
     plt.ylabel("Score")
-    plt.xlabel("Número de vecinos")
-    for weights in ['uniform', 'distance']:
+    plt.xlabel("Numero de vecinos")
+    for weights in ['distance']:#,'uniform']:
         trainScores[weights] = []
         testScores[weights] = []
         for i in NeighborsCount:
@@ -68,7 +70,7 @@ def main():
                 X_test[j].append(rn.randint(random_start,random_end)) 
         trainScores = {}
         testScores = {}
-        for weights in ['uniform', 'distance']:
+        for weights in ['uniform']:#,'uniform']:
             trainScores[weights] = []
             testScores[weights] = []
             for i in NeighborsCount:
