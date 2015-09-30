@@ -7,7 +7,7 @@ from sklearn.datasets import load_iris
 
 def main():
     iris = load_iris()
-    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(iris.data, iris.target, test_size=0.3, random_state=0)
+    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(iris.data, iris.target, test_size=0.2, random_state=0)
 
     max_nodes = range(10,500,10)
 
@@ -28,7 +28,9 @@ def main():
     plt.legend()
     plt.show()  
 
-
+    #noise_idx = np.random.random(Y_train.shape)
+    #Y_train_with_noise = Y_train.copy()
+    #Y_train_with_noise[noise_idx<0.3] = 1 - Y_train_with_noise[noise_idx<0.3]
 
 
 
