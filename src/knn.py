@@ -47,7 +47,7 @@ def main():
 
     #noise_idx = np.random.random(Y_train.shape)
     #Y_train_with_noise = Y_train.copy()
-    #Y_train_with_noise[noise_idx<0.3] = np.floor(Y_train_with_noise[noise_idx<0.3] - 1) * (-1)
+    #Y_train_with_noise[noise_idx<0.3] = 1 - Y_train_with_noise[noise_idx<0.3]
     plt.legend()
     plt.show()
 

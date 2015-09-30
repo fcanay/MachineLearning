@@ -3,21 +3,72 @@ import urllib
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import cross_validation
 from sklearn import preprocessing
+from sklearn import metrics
 import matplotlib.pyplot as plt
 import random as rn
+from sklearn.feature_extraction.text import HashingVectorizer
 import csv
 
+clases = ['Cultura',
+     'Deportes',
+     'Econom\xc3\xada',
+     'Espect\xc3\xa1culos',
+     'Internacionales',
+     'Pol\xc3\xadtica',
+     'Seguridad',
+     'Sociedad',
+    'Tecnolog\xc3\xada']
 def main():
-	X = []
-	Y = []
-	with open('notas_In.csv', 'rb') as csvfile:
-	    spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-	    for row in spamreader:
-	        X.append()
-	        Y.append()
 
-	clf = MultinomialNB()
+    vectorizer = HashingVectorizer(decode_error='ignore', n_features=2 ** 18,
+                               non_negative=True)
+    X = []
+    y = []
+    text = []
 
+    with open('notas_ln.csv', 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        for row in spamreader:
+            y.append(row.pop(2))
+            text.append(row.pop(2))
+            #X.append(row)
+
+    y.pop(0)
+    #X.pop(0)
+    text.pop(0)
+
+    X = vectorizer.transform(text)
+
+    #X = np.c_[X,text]
+
+    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2)
+
+    
+    clf = MultinomialNB()
+    clf.fit(X_train,Y_train)
+
+    conf_matrix = metrics.confusion_matrix(Y_test,clf.predict(X_test))
+    
+    plt.figure()
+    plot_confusion_matrix(conf_matrix)
+
+    conf_matrix_normalized = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis]
+
+    plt.figure()
+    plot_confusion_matrix(conf_matrix_normalized, title='Normalized confusion matrix')
+
+    plt.show()
+
+def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(clases))
+    plt.xticks(tick_marks, clases, rotation=45)
+    plt.yticks(tick_marks, clases)
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
 
 
 if __name__ == '__main__':
