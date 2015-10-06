@@ -69,7 +69,7 @@ def main():
             plt.plot(max_nodes, testScoresWithNoise,label='Test Score') 
 
             plt.legend()
-            file_path = "../informe/idt/noiseless/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
+            file_path = "../informe/idt/noise/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
             print file_path
             plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
             plt.close()
