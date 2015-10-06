@@ -29,7 +29,7 @@ def main():
             trainScores.append(clf.score(X_train,Y_train))
             testScores.append(clf.score(X_test,Y_test))
 
-        plt.figure(2 * seed)
+        plt.figure()
         plt.title("Sobreajuste en IDT")
         plt.ylabel("Score")
         plt.xlabel("Numero de nodos maximos")
@@ -40,12 +40,14 @@ def main():
         file_path = "../informe/idt/noiseless/IDTwithSeed" + str(seed)
 
         plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
+        plt.close()
+        
     #noise_idx = np.random.random(Y_train.shape)
     #Y_train_with_noise = Y_train.copy()
     #Y_train_with_noise[noise_idx<0.3] = 1 - Y_train_with_noise[noise_idx<0.3]
 
     
-        noise_percentages = [0.0,0.1,0.2,0.3,0.4,0.5]
+        noise_percentages = [0,0.1,0.2,0.3,0.4,0.5]
         noise_idx = np.random.random(Y_train.shape)
         
         for noise in noise_percentages:
@@ -59,7 +61,7 @@ def main():
                 trainScoresWithNoise.append(clf.score(X_train,Y_train))
                 testScoresWithNoise.append(clf.score(X_test,Y_test))
 
-            plt.figure(2 * seed + 1)
+            plt.figure()
             plt.title("Sobreajuste en IDT con ruido en ") 
             plt.ylabel("Score")
             plt.xlabel("Numero de nodos maximos")
@@ -67,10 +69,10 @@ def main():
             plt.plot(max_nodes, testScoresWithNoise,label='Test Score') 
 
             plt.legend()
-            file_path = "../informe/idt/noiseless/IDTwithSeed" + str(seed)+"noise"+ str(noise)
-
+            file_path = "../informe/idt/noiseless/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
+            print file_path
             plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
-
+            plt.close()
 
 
 if __name__ == '__main__':
