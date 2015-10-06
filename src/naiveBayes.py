@@ -74,11 +74,13 @@ def main():
     
     conf_matrix_normalized = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis]
     #plt.figure()
-    plot_confusion_matrix(conf_matrix_normalized, title='Normalized confusion matrix')
+    #print(conf_matrix_normalized)
+
+    plot_confusion_matrix(conf_matrix_normalized)
     #plt.matshow(conf_matrix)
     plt.show()
 
-def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
+def plot_confusion_matrix(cm):
     #plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.matshow(cm)
     plt.colorbar()
@@ -86,7 +88,6 @@ def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
     plt.xticks(tick_marks, clases_unicode,rotation=-45)
     plt.yticks(tick_marks, clases_unicode)
     #plt.tight_layout()
-    plt.title(title)
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 

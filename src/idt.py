@@ -13,7 +13,7 @@ def main():
     
     X = dataset[:,0:8]
     Y = dataset[:,8]
-    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(iris.data, iris.target, test_size=0.2, random_state=0)
+    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2, random_state=0)
 
     random_seeds = range(0,100,5)
     for seed in random_seeds:
