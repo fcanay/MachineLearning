@@ -46,9 +46,10 @@ def main():
     #Y_train_with_noise[noise_idx<0.3] = 1 - Y_train_with_noise[noise_idx<0.3]
 
     
-        noise_percentages = [0,0.1,0.2,0.3,0.4,0.5]
+        noise_percentages = [0,0.5]
         noise_idx = np.random.random(Y_train.shape)
         
+        plt.figure()
         for noise in noise_percentages:
             y_train_with_noise = Y_train.copy()
             #HACER ANDAR ESTA LINEA Y SALE.
@@ -60,19 +61,18 @@ def main():
                 clf = tree.DecisionTreeClassifier(max_leaf_nodes=i).fit(X_train, Y_train)
                 trainScoresWithNoise.append(clf.score(X_train,Y_train))
                 testScoresWithNoise.append(clf.score(X_test,Y_test))
-
-            plt.figure()
-            plt.title("Sobreajuste en IDT con ruido en ") 
-            plt.ylabel("Score")
-            plt.xlabel("Numero de nodos maximos")
             plt.plot(max_nodes, trainScoresWithNoise,label='Train Score')
-            plt.plot(max_nodes, testScoresWithNoise,label='Test Score') 
+            plt.plot(max_nodes, testScoresWithNoise,label='Test Score error '+str(int(noise*100))+'%') 
 
-            plt.legend()
-            file_path = "../informe/idt/noise/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
-            print file_path
-            plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
-            plt.close()
+        plt.ylabel("Score")
+        plt.title("Sobreajuste en IDT con ruido en ") 
+        plt.xlabel("Numero de nodos maximos")
+
+        plt.legend()
+        file_path = "../informe/idt/noise/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
+        print file_path
+        plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
+        plt.close()
 
 
 if __name__ == '__main__':
