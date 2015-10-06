@@ -19,6 +19,7 @@ def main(weights):
     dataset = np.loadtxt(raw_data, dtype="string", delimiter=",")
     
     X = dataset[:,0:8]
+    X = X.astype('float') / X.astype('float').sum(axis=0)
     Y = dataset[:,8]
     
     random_seeds = range(0,100,5)
