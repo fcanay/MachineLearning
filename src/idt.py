@@ -17,12 +17,12 @@ def main():
     random_seeds = range(0,100,5)
     for seed in random_seeds:
         
-        X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.3,random_state=seed)
+        X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2,random_state=seed)
 
-        max_nodes = range(2,150,1)
 
         trainScores = []
         testScores = []
+        max_nodes = range(2,150,1)
         for i in max_nodes:
             clf = tree.DecisionTreeClassifier(max_leaf_nodes=i).fit(X_train, Y_train)
             trainScores.append(clf.score(X_train,Y_train))
