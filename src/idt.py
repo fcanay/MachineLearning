@@ -3,13 +3,12 @@ from sklearn import tree
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import cross_validation
-from sklearn.datasets import load_iris
 
 
 def main():
     url = "http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data"
     raw_data = urllib.urlopen(url)
-    dataset = np.loadtxt(raw_data, dtype="string", delimiter=",")
+    dataset = np.loadtxt(raw_data, dtype="float", delimiter=",")
     
     X = dataset[:,0:8]
     Y = dataset[:,8]
@@ -54,6 +53,7 @@ def main():
             y_train_with_noise = Y_train.copy()
             #HACER ANDAR ESTA LINEA Y SALE.
             #y_train_with_noise[noise_idx<noise] = np.floor(y_train_with_noise[noise_idx<nois] - 1)#y_train_with_noise[noise_idx<noise] - 1
+            y_train_with_noise[noise_idx<noise] = np.ones(y_train_with_noise[noise_idx<noise].shape) - y_train_with_noise[noise_idx<noise]
             trainScoresWithNoise = []
             testScoresWithNoise = []
             for i in max_nodes:
@@ -69,7 +69,7 @@ def main():
             plt.plot(max_nodes, testScoresWithNoise,label='Test Score') 
 
             plt.legend()
-            file_path = "../informe/idt/noiseless/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
+            file_path = "../informe/idt/noise/IDTwithSeed" + str(seed)+"noise"+ str(int(noise*100))
             print file_path
             plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
             plt.close()

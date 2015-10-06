@@ -16,10 +16,10 @@ def main(weights):
     
     url = "http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data"
     raw_data = urllib.urlopen(url)
-    dataset = np.loadtxt(raw_data, dtype="string", delimiter=",")
+    dataset = np.loadtxt(raw_data, dtype="float", delimiter=",")
     
     X = dataset[:,0:8]
-    X = X.astype('float') / X.astype('float').sum(axis=0)
+    X = X / X.sum(axis=0)
     Y = dataset[:,8]
     
     random_seeds = range(0,100,5)
