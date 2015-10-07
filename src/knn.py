@@ -22,13 +22,13 @@ def main(weights):
     X = X / X.sum(axis=0)
     Y = dataset[:,8]
     
-    random_seeds = [0]
+    random_seeds = range(0,100,5)
     for seed in random_seeds:
         X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, Y, test_size=0.2 ,random_state=seed)
         trainScores = {}
         testScores = {}
         plt.figure()
-        #plt.title(r"0% ruido")
+        plt.title(r"KNN con " + weights)
         plt.ylabel("Score")
         plt.xlabel("Numero de vecinos")
 ##      for weights in ['distance','uniform']:
@@ -40,9 +40,8 @@ def main(weights):
             testScores[weights].append(clf.score(X_test,Y_test))
 
     #Plotear lo q corresponda
-        plt.plot(NeighborsCount, trainScores[weights],label='Train Score '+weights)
-        plt.plot(NeighborsCount, testScores[weights],label='Test Score '+weights)
-
+        plt.plot(NeighborsCount, trainScores[weights],label='Train Score')
+        plt.plot(NeighborsCount, testScores[weights],label='Test Score')
         plt.legend()
 
         file_path = "../informe/knn/OriginalSample/KnnwithSeed" + str(seed) +"andWeight" + weights
@@ -76,7 +75,7 @@ def main(weights):
                 testScores[weights].append(clf.score(X_test,Y_test))
 
             #plt.plot(NeighborsCount, trainScores[weights],label='Train Score '+weights+' '+str(add_vars))
-            plt.plot(NeighborsCount, testScores[weights],label=str(add_vars)+' variable random')
+            plt.plot(NeighborsCount, testScores[weights],label=str(add_vars)+' variables random')
 
             #Plotear lo q corresponda
         plt.legend()

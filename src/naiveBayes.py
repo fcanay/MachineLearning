@@ -57,31 +57,32 @@ def main():
     y = le.transform(y)
 
     X = vectorizer.transform(text)
-
+    random_seeds = [0]
     #X = np.c_[X,text]
+    for seed in random_seeds:
+        X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=seed)
 
-    X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2)
+        
+        clf = MultinomialNB(alpha=0.01)
+        clf.fit(X_train,Y_train)
 
-    
-    clf = MultinomialNB(alpha=0.01)
-    clf.fit(X_train,Y_train)
+        conf_matrix = metrics.confusion_matrix(Y_test,clf.predict(X_test))
+        print(conf_matrix)
+        #plt.figure()
+        plot_confusion_matrix(conf_matrix,seed)
 
-    conf_matrix = metrics.confusion_matrix(Y_test,clf.predict(X_test))
-    print(conf_matrix)
-    #plt.figure()
-    plot_confusion_matrix(conf_matrix)
+        
+        conf_matrix_normalized = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis]
+        #plt.figure()
+        #print(conf_matrix_normalized)
 
-    
-    conf_matrix_normalized = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis]
-    #plt.figure()
-    #print(conf_matrix_normalized)
-
-    plot_confusion_matrix(conf_matrix_normalized)
+        plot_confusion_matrix(conf_matrix_normalized,seed,'_normalizada')
     #plt.matshow(conf_matrix)
-    plt.show()
+    #plt.show()
 
-def plot_confusion_matrix(cm):
+def plot_confusion_matrix(cm,seed,normalizada=''):
     #plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.figure(figsize=(20,10))
     plt.matshow(cm)
     plt.colorbar()
     tick_marks = np.arange(len(clases_unicode))
@@ -90,6 +91,9 @@ def plot_confusion_matrix(cm):
     #plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
+    file_path = "../informe/bayes/conf_matrix_" + str(seed) + normalizada
+    plt.savefig(file_path, dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1,frameon=None)
+    plt.close()
 
 
 if __name__ == '__main__':

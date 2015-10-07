@@ -62,10 +62,10 @@ def main():
                 trainScoresWithNoise.append(clf.score(X_train,Y_train))
                 testScoresWithNoise.append(clf.score(X_test,Y_test))
             plt.plot(max_nodes, trainScoresWithNoise,label='Train Score')
-            plt.plot(max_nodes, testScoresWithNoise,label='Test Score error '+str(int(noise*100))+'%') 
+            plt.plot(max_nodes, testScoresWithNoise,label='Test Score ruido '+str(int(noise*100))+'%') 
 
         plt.ylabel("Score")
-        plt.title("Sobreajuste en IDT con ruido en ") 
+        plt.title("Sobreajuste en IDT con ruido") 
         plt.xlabel("Numero de nodos maximos")
 
         plt.legend()
