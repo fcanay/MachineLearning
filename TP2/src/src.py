@@ -53,17 +53,19 @@ class VoterClassifier(ClassifierMixin):
 
 #Usar KNN
 def Bagging(clasificador,n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstrap_features=False,random_state=777): 
-	tuned_parameters = []
+	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.3,0.5,0.7,1],'max_features':[0.5,0.7,1],'bootstrap':[True,False],'bootstrap_features':[True,False]}]
 	return GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=5,scoring='%s_weighted' % score)
 
 def Boosting(n_estimators=100,random_state=777):
-	tuned_parameters = []
+	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
 	return GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5,scoring='%s_weighted' % score)
 
 
 def RandomForest(n_estimators=10,random_state=777):
-	tuned_parameters = []
+	tuned_parameters = [{'n_estimators':[],'max_features':[],'bootstrap':[True,False]}]
 	return GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,scoring='%s_weighted' % score)
+
+def plotGridSearch():
 
  # print("Best parameters set found on development set:")
  #    print()
