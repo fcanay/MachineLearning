@@ -1,9 +1,12 @@
 import numpy as np
 import cv2
 import glob
+
+from statistics import mode
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.grid_search import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 def main(path):
 	img = cv2.imread('/tmp/perrogato/train/dog.999.jpg',0) 
@@ -28,17 +31,54 @@ def main(path):
 			
 	print d
 
-def clasificador:
+class VoterClassifier(ClassifierMixin):
+	def __init__(self):
+        MySuperClass.__init__(self)
+        self.clasificadores = [Bagging(),Boosting(),RandomForest()]
+
+    def fit(X,y):
+    	for clasificador in self.clasificadores:
+    		clasificador.fit(X,y)
+
+    def predict(X):
+    	res = []
+    	for clasificador in self.clasificadores:
+    		res.append(clasificador.predict(X))
+    	return mode(res)[0][0]
+
+    def predict_proba(self, X):
+        self.predictions_ = list()
+        for classifier in self.classifiers:
+            self.predictions_.append(classifier.predict_proba(X))
+        return np.mean(self.predictions_, axis=0)
 
 
+#Usar KNN
 def Bagging(clasificador,n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstrap_features=False,random_state=777): 
-	return BaggingClassifier(clasificador,n_estimators=n_estimators,max_samples=max_samples, max_features=max_features,bootstrap=bootstrap,bootstrap_features=bootstrap_features,random_state=random_state)
+	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.3,0.5,0.7,1],'max_features':[0.5,0.7,1],'bootstrap':[True,False],'bootstrap_features':[True,False]}]
+	return GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=5,scoring='%s_weighted' % score)
 
 def Boosting(n_estimators=100,random_state=777):
-	return AdaBoostClassifier(n_estimators=n_estimators,random_state=random_state)
+	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
+	return GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5,scoring='%s_weighted' % score)
 
-def RandomForest():
 
+def RandomForest(n_estimators=10,random_state=777):
+	tuned_parameters = [{'n_estimators':[],'max_features':[],'bootstrap':[True,False]}]
+	return GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,scoring='%s_weighted' % score)
+
+def plotGridSearch():
+
+ # print("Best parameters set found on development set:")
+ #    print()
+ #    print(clf.best_params_)
+ #    print()s
+ #    print("Grid scores on development set:")
+ #    print()
+ #    for params, mean_score, scores in clf.grid_scores_:
+ #        print("%0.3f (+/-%0.03f) for %r"
+ #              % (mean_score, scores.std() * 2, params))
+ #    print()
 
 
 def oscuro(gris):
@@ -71,7 +111,7 @@ def get_clases_from(imageFileNames):
 
 
 if __name__ == '__main__':
-	if (len(sys.argv) < 4):
+	if (len(sys.argv) != 2):
     print 'Usage: python src.py [path_to_images] '
 else:
     path = (sys.argv[1])
