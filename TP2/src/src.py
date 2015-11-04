@@ -1,13 +1,14 @@
 import numpy as np
 import cv2
-from statistics import mode
+from scipy.stats import mode
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.grid_search import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.base import ClassifierMixin
 def main():
-	img = cv2.imread('/tmp/perrogato/train/dog.999.jpg',0) 
+	img = cv2.imread('/tmp/train/dog.999.jpg',0) 
 	equ = cv2.equalizeHist(img)
 	equ = img
 	patterns_dict = {}
@@ -31,24 +32,24 @@ def main():
 
 class VoterClassifier(ClassifierMixin):
 	def __init__(self):
-        MySuperClass.__init__(self)
-        self.clasificadores = [Bagging(),Boosting(),RandomForest()]
+		ClassifierMixin.__init__(self)
+		self.clasificadores = [Bagging(),Boosting(),RandomForest()]
 
-    def fit(X,y):
-    	for clasificador in self.clasificadores:
-    		clasificador.fit(X,y)
+	def fit(X,y):
+		for clasificador in self.clasificadores:
+			clasificador.fit(X,y)
 
-    def predict(X):
-    	res = []
-    	for clasificador in self.clasificadores:
-    		res.append(clasificador.predict(X))
-    	return mode(res)[0][0]
+	def predict(X):
+		res = []
+		for clasificador in self.clasificadores:
+			res.append(clasificador.predict(X))
+		return mode(res)[0][0]
 
-    def predict_proba(self, X):
-        self.predictions_ = list()
-        for classifier in self.classifiers:
-            self.predictions_.append(classifier.predict_proba(X))
-        return np.mean(self.predictions_, axis=0)
+	def predict_proba(self, X):
+		self.predictions_ = list()
+		for classifier in self.classifiers:
+			self.predictions_.append(classifier.predict_proba(X))
+		return np.mean(self.predictions_, axis=0)
 
 
 #Usar KNN
@@ -66,7 +67,7 @@ def RandomForest(n_estimators=10,random_state=777):
 	return GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,scoring='%s_weighted' % score)
 
 def plotGridSearch():
-
+	pass
  # print("Best parameters set found on development set:")
  #    print()
  #    print(clf.best_params_)
