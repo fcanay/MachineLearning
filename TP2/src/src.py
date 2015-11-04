@@ -1,10 +1,11 @@
 import numpy as np
 import cv2
+import glob
 from sklearn.ensemble import BaggingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-def main():
+def main(path):
 	img = cv2.imread('/tmp/perrogato/train/dog.999.jpg',0) 
 	equ = cv2.equalizeHist(img)
 	equ = img
@@ -46,6 +47,32 @@ def oscuro(gris):
 	else:
 		return 0
 
+def attributes_from(images):
+	all_attributes = [] 
+	for image in images:
+		attributes = extractAttributes(image);
+	return all_attributes
+
+def extract_attributes(image):
+	return []
+	
+def load_images(path):
+	imageFileNames = glob.glob(path +"*.jpg")
+	return imageFilesm
+
+def get_clases_from(imageFileNames):
+	clases = []
+	for fileName in imageFileNames:
+		if fileName.find("dog") > -1 :
+			clases.Add("dog")
+		if fileName.find("cat") > -1 :
+			clases.Add("cat")
+	return clases
+
 
 if __name__ == '__main__':
-	main()
+	if (len(sys.argv) < 4):
+    print 'Usage: python src.py [path_to_images] '
+else:
+    path = (sys.argv[1])
+    main(path)
