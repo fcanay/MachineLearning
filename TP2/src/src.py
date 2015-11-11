@@ -3,6 +3,7 @@ import cv2
 from scipy.stats import mode
 import glob
 import sys
+import csv
 from sklearn.ensemble import BaggingClassifier
 
 from sklearn import cross_validation
@@ -12,22 +13,27 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.base import ClassifierMixin
 def main(path):
-	X,y = load_images('/tmp/train/')
+
+	y = []
+	X = []
+	with open('filename00.csv', 'r') as csvfile:
+		spamreader = csv.reader(csvfile, delimiter=',', quotechar='"',quoting=csv.QUOTE_MINIMAL)
+		for row in spamreader:
+			clas = row.pop(0)
+			if clas == 'dog':
+				clas = 0
+			else:
+				clas = 1
+			y.append(clas)
+			X.append(row)
+	
+	#X,y = load_images('/tmp/train/')
 	clf = VoterClassifier()
-	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.5,random_state=777)
+	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
 	clf.fit(X_train,Y_train)
 	print clf.score(X_test,Y_test)
 	print clf.sub_score(X_test,Y_test)
 	return
-
-
-	img = cv2.imread('/tmp/train/dog.999.jpg') 
-	print extract_attributes(img)
-	
-
-
-	return
-
 
 
 
@@ -55,7 +61,7 @@ def main(path):
 class VoterClassifier(ClassifierMixin):
 	def __init__(self):
 		ClassifierMixin.__init__(self)
-		self.clasificadores = [RandomForest(),Boosting()]#,Bagging()]
+		self.clasificadores = [RandomForest(),Boosting()]#	,Bagging()]
 
 	def fit(self,X,y):
 		for clasificador in self.clasificadores:
@@ -82,8 +88,8 @@ class VoterClassifier(ClassifierMixin):
 
 #Usar KNN
 def Bagging(n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstrap_features=False,random_state=777): 
-	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.3,0.5,0.7,1],'max_features':[0.5,0.7,1],'bootstrap':[True,False],'bootstrap_features':[True,False]}]
-	return GridSearchCV(BaggingClassifier(KNeighborsClassifier(n_neighbors=2)), tuned_parameters, cv=5)
+	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.7,1],'max_features':[0.5,0.7,1]}]
+	return GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=2)
 
 def Boosting(n_estimators=100,random_state=777):
 	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
@@ -93,6 +99,7 @@ def Boosting(n_estimators=100,random_state=777):
 def RandomForest(n_estimators=10,random_state=777):
 	tuned_parameters = [{'n_estimators':[5,10,15],'max_features':['sqrt','log2',None],'bootstrap':[True,False]}]
 	return GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5)
+	return RandomForestClassifier()
 
 def plotGridSearch():
 	pass
