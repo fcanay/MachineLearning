@@ -28,7 +28,7 @@ def main(path):
 
 	
 	#X,y = load_images('/tmp/train/')
-	clf = VotingClassifier('estimators': [RandomForest(),Boosting(),Gradient()])
+	clf = VotingClassifier('estimators'= [RandomForest(),Boosting(),Gradient()])
 	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
 	clf.fit(X_train,Y_train)
 	print clf.score(X_test,Y_test)
@@ -43,7 +43,7 @@ def load_batch(X,path,batch,filename):
 		if X != []:
 			for row in spamreader:
 				X[0].append(row)
-		else:
+		else:	
 			for row in spamreader:
 				X.append(row)
 
@@ -72,7 +72,7 @@ class VoterClassifier(ClassifierMixin):
 		res = []
 		for clasificador in self.clasificadores:
 			res.append(clasificador.score(X,y))
-		return res
+		return random_state
 
 
 #Usar KNN
