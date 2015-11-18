@@ -73,7 +73,7 @@ def histogramaByN(image):
 
 def Patrones2x2ByN(greyImage):
     #greyImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    patterns_dict = {'0000':0,'0001':0,'0010':0,'0100':0,'1000':0,'0011':0,'0101':0,'0110':0,'0111':0,'1001':0,'1010':0,'1011':0,'1100':0,'1101':0,'1110':0,'1111':0,}
+    patterns_dict = {'0000':0,'0001':0,'0010':0,'0100':0,'1000':0,'0011':0,'0101':0,'0110':0,'0111':0,'1001':0,'1010':0,'1011':0,'1100':0,'1101':0,'1110':0,'1111':0}
     for i in xrange(greyImage.shape[0]-1):
         for j in xrange(greyImage.shape[1]-1):
             pattern = str(oscuro(greyImage[i,j])) + str(oscuro(greyImage[i+1,j]))+ str(oscuro(greyImage[i,j+1]))+ str(oscuro(greyImage[i+1,j+1]))
