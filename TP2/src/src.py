@@ -77,7 +77,7 @@ class VoterClassifier(ClassifierMixin):
 
 #Usar KNN
 def Bagging(n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstrap_features=False,random_state=777): 
-	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.7,1],'max_features':[s0.7,1]}]
+	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.7,1],'max_features':[0.7,1]}]
 	return ('Bagging',GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=2))
 
 def Boosting(n_estimators=100,random_state=777):
