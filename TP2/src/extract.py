@@ -123,7 +123,7 @@ def load_images(path,fileName):
     attributes_from(images,fileName)
 
 def getImageFileNames(path):
-    imageFileNames = glob.glob(path +"*0000.jpg")
+    imageFileNames = glob.glob(path +"*0.jpg")
     print imageFileNames
     return imageFileNames
 

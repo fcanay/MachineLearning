@@ -15,34 +15,44 @@ from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.svm import SVC
-def main(path):
+def main(path,filename):
 
-	batchs = []
+	batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
+	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
 	
 	X = []
 	y = []
-	load_batch(y,path,'classes',filename) 
-
+	load_batch(y,path,'clases',filename) 
+	y = [j for i in y for j in i]
 	for batch in batchs:
 		load_batch(X,path,batch,filename)
-
 	
 	#X,y = load_images('/tmp/train/')
-	clf = VotingClassifier('estimators'= [RandomForest(),Boosting(),Gradient()])
+	est = [RandomForest(),Boosting(),Gradient(),SVM()]
+	clf = VotingClassifier(estimators= est)
+	#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
+	#print scores
 	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
+	#print clf.sub_score(X_test,Y_test)
+	for name,estim in est:
+		estim.fit(X_train,Y_train)
+		print name
+		print estim.score(X_test,Y_test)
+	
 	clf.fit(X_train,Y_train)
 	print clf.score(X_test,Y_test)
-	#print clf.sub_score(X_test,Y_test)
+
 	return
 
 
 def load_batch(X,path,batch,filename):
-	with open(path+batch+'_'+filename, 'r') as csvfile:
+	with open(path+filename+'_'+batch+'.csv', 'r') as csvfile:
 		spamreader = csv.reader(csvfile, delimiter=',', quotechar='"',quoting=csv.QUOTE_MINIMAL)
 		i = 0
 		if X != []:
 			for row in spamreader:
-				X[0].append(row)
+				X[i] += row
+				i +=1
 		else:	
 			for row in spamreader:
 				X.append(row)
@@ -91,7 +101,7 @@ def RandomForest(n_estimators=10,random_state=777):
 	return RandomForestClassifier()
 
 def Gradient():
-	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2],'max_samples':[0.7,1],'max_features':[0.7,1]}]
+	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2]}]
 	return ('Gradient',GridSearchCV(GradientBoostingClassifier(), tuned_parameters, cv=5))
 
 def SVM():
@@ -104,8 +114,9 @@ def plotGridSearch():
 
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2 and False:
-		print 'Usage: python src.py [path_to_images] '
+	if len(sys.argv) != 3 and False:
+		print 'Usage: python src.py [path_to_images] [batch_name]'
 	else:
-		path = True#(sys.argv[1])
-		main(path)
+		path = (sys.argv[1])
+		filename = (sys.argv[2])
+		main(path,filename)
