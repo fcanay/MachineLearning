@@ -19,29 +19,31 @@ import cPickle as pickle
 
 def main(path,filename):
 
-	batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
+	batchsT = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
-	
-	X = []
-	y = []
-	load_batch(y,path,'clases',filename) 
-	y = [j for i in y for j in i]
-	for batch in batchs:
-		load_batch(X,path,batch,filename)
-	
-	#X,y = load_images('/tmp/train/')
-	est = [RandomForest(),Boosting(),Gradient(),SVM()]
-	clf = VotingClassifier(estimators= est)
-	#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
-	#print scores
-	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
-	#print clf.sub_score(X_test,Y_test)
-	for name,estim in est:
-		#estim.fit(X_train,Y_train)
-		print name
-		print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
-	print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
-	
+	for batchs in batchsT:
+		print batchs
+		batchs = [batchs]
+		X = []
+		y = []
+		load_batch(y,path,'clases',filename) 
+		y = [j for i in y for j in i]
+		for batch in batchs:
+			load_batch(X,path,batch,filename)
+		
+		#X,y = load_images('/tmp/train/')
+		est = [RandomForest(),Boosting(),Gradient(),SVM()]
+		clf = VotingClassifier(estimators= est)
+		#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
+		#print scores
+		X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
+		#print clf.sub_score(X_test,Y_test)
+		for name,estim in est:
+			#estim.fit(X_train,Y_train)
+			print name
+			print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+		print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
+		
 	#clf.fit(X_train,Y_train)
 	#print clf.score(X_test,Y_test)
 
