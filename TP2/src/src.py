@@ -15,6 +15,8 @@ from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.svm import SVC
+import cPickle as pickle
+
 def main(path,filename):
 
 	batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
