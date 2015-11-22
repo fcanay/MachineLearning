@@ -15,6 +15,8 @@ from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.svm import SVC
+import cPickle as pickle
+
 def main(path,filename):
 
 	batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
@@ -35,19 +37,20 @@ def main(path,filename):
 	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
 	#print clf.sub_score(X_test,Y_test)
 	for name,estim in est:
-		estim.fit(X_train,Y_train)
+		#estim.fit(X_train,Y_train)
 		print name
-		print estim.score(X_test,Y_test)
+		print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+	print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
 	
-	clf.fit(X_train,Y_train)
-	print clf.score(X_test,Y_test)
+	#clf.fit(X_train,Y_train)
+	#print clf.score(X_test,Y_test)
 
 	return
 
 
 def load_batch(X,path,batch,filename):
 	with open(path+filename+'_'+batch+'.csv', 'r') as csvfile:
-		spamreader = csv.reader(csvfile, delimiter=',', quotechar='"',quoting=csv.QUOTE_MINIMAL)
+		spamreader = csv.reader(csvfile, delimiter=',', quotechar='"',quoting=csv.QUOTE_NONNUMERIC)
 		i = 0
 		if X != []:
 			for row in spamreader:
@@ -88,25 +91,25 @@ class VoterClassifier(ClassifierMixin):
 #Usar KNN
 def Bagging(n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstrap_features=False,random_state=777): 
 	tuned_parameters = [{'n_estimators': [5,10,15] ,'max_samples':[0.7,1],'max_features':[0.7,1]}]
-	return ('Bagging',GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=2))
+	return ('Bagging',GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=2,n_jobs=-1))
 
 def Boosting(n_estimators=100,random_state=777):
 	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
-	return ('Boosting',GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5))
+	return ('Boosting',GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5,n_jobs=-1))
 
 
 def RandomForest(n_estimators=10,random_state=777):
 	tuned_parameters = [{'n_estimators':[5,10,15],'max_features':['sqrt','log2',None],'bootstrap':[True,False]}]
-	return ('RondomForest',GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5))
+	return ('RandomForest',GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,n_jobs=-1))
 	return RandomForestClassifier()
 
 def Gradient():
 	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2]}]
-	return ('Gradient',GridSearchCV(GradientBoostingClassifier(), tuned_parameters, cv=5))
+	return ('Gradient',GridSearchCV(GradientBoostingClassifier(), tuned_parameters, cv=5,n_jobs=-1))
 
 def SVM():
 	tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],'C': [1, 10, 100, 1000]},{'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
-	return ('SVM',GridSearchCV(SVC(), tuned_parameters, cv=5))
+	return ('SVM',GridSearchCV(SVC(), tuned_parameters, cv=5,n_jobs=-1))
 
 def plotGridSearch():
 	pass

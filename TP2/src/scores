@@ -1,0 +1,26 @@
+Scores:
+Test Medio:
+(features como strings):
+RandomForest
+[ 0.62   0.64   0.58   0.64   0.625]
+Boosting
+[ 0.56        0.68        0.56        0.64        0.60416667]
+Gradient
+[ 0.66        0.56        0.6         0.68        0.64583333]
+SVM
+[ 0.74        0.6         0.58        0.58        0.58333333]
+
+(features como strings):
+Voter
+[ 0.66        0.62        0.54        0.72        0.66666667]
+RandomForest
+[ 0.48    0.62    0.56    0.6     0.5625]
+Boosting
+[ 0.56        0.68        0.56        0.64        0.60416667]
+
+Test Grande:
+(features int)
+RandomForest
+[ 0.648  0.592  0.624  0.598  0.612]
+Boosting
+[ 0.646  0.61   0.64   0.664  0.618]
