@@ -59,8 +59,8 @@ def attributes_from(images,fileName):
     # writeCSV('patronesCirculaesByN_3_5',fileName,attr_PatronesCirc_ByN_3_5)
     # writeCSV('patronesCirculaesByN_5_9',fileName,attr_PatronesCirc_ByN_5_9)
 
-    func = [Patrones2x2ByN,Patrones3x3ByN]
-    func_names = ['patrones2x2ByN','patrones3x3ByN']
+    func = [histogramaColor]
+    func_names = ['histogramaColor']
     attr=[]
     i=1
     j=1
@@ -139,7 +139,7 @@ def load_images(path,fileName):
     #     images.append(cv2.imread(myFile))
 
 def getImageFileNames(path):
-    imageFileNames = glob.glob(path +"*.jpg")
+    imageFileNames = glob.glob(path +"*0.jpg")
     print imageFileNames
     return imageFileNames
 
