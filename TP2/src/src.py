@@ -20,10 +20,12 @@ import cPickle as pickle
 def main(path,filename):
 
 	batchsT = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
+	batchsAux = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
-	for batchs in batchsT:
-		print batchs
-		batchs = [batchs]
+	for batch in batchsT:
+		print batch
+		batchs = batchsAux
+		batchs.remove(batch)
 		X = []
 		y = []
 		load_batch(y,path,'clases',filename) 
@@ -33,19 +35,19 @@ def main(path,filename):
 		
 		#X,y = load_images('/tmp/train/')
 		est = [RandomForest(),Boosting(),Gradient(),SVM()]
-		clf = VotingClassifier(estimators= est)
+		clf = VotingClassifier(estimators=est)
 		#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
 		#print scores
 		X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
 		#print clf.sub_score(X_test,Y_test)
-		for name,estim in est:
+		#for name,estim in est:
 			#estim.fit(X_train,Y_train)
-			print name
-			print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
-		print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
+		#	print name
+		#	print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+		#print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
 		
-	#clf.fit(X_train,Y_train)
-	#print clf.score(X_test,Y_test)
+		clf.fit(X_train,Y_train)
+		print clf.score(X_test,Y_test)
 
 	return
 
@@ -65,7 +67,7 @@ def load_batch(X,path,batch,filename):
 class VoterClassifier(ClassifierMixin):
 	def __init__(self):
 		ClassifierMixin.__init__(self)
-		self.clasificadores = [RandomForest(),Boosting(),Gradient(),SVM()]#	,Bagging()]
+		self.clasificadores = [RandomForest(),Boosting(),Gradient(),SVM(),SVM2()]#	,Bagging()]
 
 	def fit(self,X,y):
 		for clasificador in self.clasificadores:
@@ -98,20 +100,26 @@ def Bagging(n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstra
 def Boosting(n_estimators=100,random_state=777):
 	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
 	return ('Boosting',GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5,n_jobs=-1))
+	return ('Boosting',AdaBoostClassifier())
 
 
 def RandomForest(n_estimators=10,random_state=777):
 	tuned_parameters = [{'n_estimators':[5,10,15],'max_features':['sqrt','log2',None],'bootstrap':[True,False]}]
 	return ('RandomForest',GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,n_jobs=-1))
-	return RandomForestClassifier()
+	return ('RandomForest',RandomForestClassifier())
 
-def Gradient():
+def Gradient(i=0):
 	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2]}]
 	return ('Gradient',GridSearchCV(GradientBoostingClassifier(), tuned_parameters, cv=5,n_jobs=-1))
+	return ('Gradient',GradientBoostingClassifier())
 
 def SVM():
 	tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],'C': [1, 10, 100, 1000]},{'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
 	return ('SVM',GridSearchCV(SVC(), tuned_parameters, cv=5,n_jobs=-1))
+	return ('SVM',SVC())
+
+def SVM2():
+	return ('SVM2',SVC(kernel='lineal'))
 
 def plotGridSearch():
 	pass
