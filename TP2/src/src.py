@@ -22,32 +22,40 @@ def main(path,filename):
 	batchsT = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
 	batchsAux = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
-	for batch in batchsT:
-		print batch
-		batchs = batchsAux
-		batchs.remove(batch)
-		X = []
-		y = []
-		load_batch(y,path,'clases',filename) 
-		y = [j for i in y for j in i]
-		for batch in batchs:
-			load_batch(X,path,batch,filename)
-		
-		#X,y = load_images('/tmp/train/')
-		est = [RandomForest(),Boosting(),Gradient(),SVM()]
-		clf = VotingClassifier(estimators=est)
-		#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
-		#print scores
-		X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
-		#print clf.sub_score(X_test,Y_test)
-		#for name,estim in est:
-			#estim.fit(X_train,Y_train)
-		#	print name
-		#	print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
-		#print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
-		
-		clf.fit(X_train,Y_train)
-		print clf.score(X_test,Y_test)
+	#for batch in batchsT:
+
+
+	#print batch
+	batchs = batchsAux
+	#batchs.remove(batch)
+	X = []
+	y = []
+	load_batch(y,path,'clases',filename) 
+	y = [j for i in y for j in i]
+	for batch in batchs:
+		load_batch(X,path,batch,filename)
+	
+	#X,y = load_images('/tmp/train/')
+	est = [RandomForest(),Boosting()]
+	for i in xrange(0,4):
+		est.append(Gradient(i))
+	for i in xrange(0,6):
+		est.append(SVM(i))
+
+	clf = VotingClassifier(estimators=est)
+	#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
+	#print scores
+	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
+	#print clf.sub_score(X_test,Y_test)
+	for name,estim in est:
+		print name
+		estim.fit(X_train,Y_train)
+		print estim.score(X_test,Y_test)
+		#print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+	#print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
+	
+	clf.fit(X_train,Y_train)
+	print clf.score(X_test,Y_test)
 
 	return
 
@@ -98,22 +106,47 @@ def Bagging(n_estimators=10,max_samples=1,max_features=1,bootstrap=True,bootstra
 	return ('Bagging',GridSearchCV(BaggingClassifier(KNeighborsClassifier()), tuned_parameters, cv=2,n_jobs=-1))
 
 def Boosting(n_estimators=100,random_state=777):
+	return ('Boosting',AdaBoostClassifier())
 	tuned_parameters = [{'n_estimators':[30,50,75],'learning_rate':[0.25,0.5,0.75,1]}]
 	return ('Boosting',GridSearchCV(AdaBoostClassifier(), tuned_parameters, cv=5,n_jobs=-1))
-	return ('Boosting',AdaBoostClassifier())
 
 
 def RandomForest(n_estimators=10,random_state=777):
+	return ('RandomForest',RandomForestClassifier())
 	tuned_parameters = [{'n_estimators':[5,10,15],'max_features':['sqrt','log2',None],'bootstrap':[True,False]}]
 	return ('RandomForest',GridSearchCV(RandomForestClassifier(), tuned_parameters, cv=5,n_jobs=-1))
-	return ('RandomForest',RandomForestClassifier())
 
 def Gradient(i=0):
+	if i==0:
+		return ('Gradient'+str(i),GradientBoostingClassifier(random_state=i))
+	elif i==1:
+		return ('Gradient'+str(i),GradientBoostingClassifier(loss='exponential',random_state=i))
+	elif i==2:
+		return ('Gradient'+str(i),GradientBoostingClassifier(loss='exponential',learning_rate=0.2,random_state=i))
+	elif i==3:
+		return ('Gradient'+str(i),GradientBoostingClassifier(learning_rate=0.2,random_state=i))
+	else:
+		return ('Gradient'+str(i),GradientBoostingClassifier(random_state=i))
 	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2]}]
 	return ('Gradient',GridSearchCV(GradientBoostingClassifier(), tuned_parameters, cv=5,n_jobs=-1))
 	return ('Gradient',GradientBoostingClassifier())
 
-def SVM():
+def SVM(i=0):
+	if i==0:
+		return ('SVM'+str(i),SVC(random_state=i))
+	elif i==1:
+		return ('SVM'+str(i),SVC(kernel='linear',random_state=i))
+	elif i==2:
+		return ('SVM'+str(i),SVC(kernel='linear',C=100,random_state=i))
+	elif i==3:
+		return ('SVM'+str(i),SVC(C=100,random_state=i))
+	elif i==4:
+		return ('SVM'+str(i),SVC(gamma=1e-3,random_state=i))
+	elif i==5:
+		return ('SVM'+str(i),SVC(gamma=1e-4,random_state=i))
+	else:
+		return ('SVM'+str(i),SVC(random_state=i))
+
 	tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],'C': [1, 10, 100, 1000]},{'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
 	return ('SVM',GridSearchCV(SVC(), tuned_parameters, cv=5,n_jobs=-1))
 	return ('SVM',SVC())

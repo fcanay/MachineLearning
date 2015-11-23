@@ -11,8 +11,8 @@ from sklearn.feature_selection import chi2
 from sklearn import cross_validation
 def main(path,filename):
 
-	batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patronesCircularesByN_2_5','patronesCircularesByN_2_9','patronesCircularesByN_3_9','patronesCircularesByN_5_9','patronesCircularesByN_3_5']
-	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
+	#batchs = ['histogramaByN','histogramaColor','patrones2x2ByN','patronesCircularesByN_2_5','patronesCircularesByN_2_9','patronesCircularesByN_3_9','patronesCircularesByN_5_9','patronesCircularesByN_3_5']
+	batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_3_5']
 	percentil = 20
 	X = []
 	y = []
