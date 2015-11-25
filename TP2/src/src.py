@@ -20,9 +20,10 @@ import cPickle as pickle
 def main(path,filename):
 
 	batchsT = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
-	batchsAux = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
+	batchsAux = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5','patronesCirculaesByN_6_12','patronesCirculaesByN_8_12','patronesCirculaesByN_10_12']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
-	#for batch in batchsT:
+	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_3_5']
+	#for batch in batchsAux:
 
 
 	#print batch
@@ -37,9 +38,9 @@ def main(path,filename):
 	
 	#X,y = load_images('/tmp/train/')
 	est = [RandomForest(),Boosting()]
-	for i in xrange(0,4):
+	for i in xrange(0,10):
 		est.append(Gradient(i))
-	for i in xrange(0,6):
+	for i in xrange(0,10):
 		est.append(SVM(i))
 
 	clf = VotingClassifier(estimators=est)
@@ -52,8 +53,9 @@ def main(path,filename):
 		estim.fit(X_train,Y_train)
 		print estim.score(X_test,Y_test)
 		#print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+	print 'voter'
 	#print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
-	
+	#return
 	clf.fit(X_train,Y_train)
 	print clf.score(X_test,Y_test)
 

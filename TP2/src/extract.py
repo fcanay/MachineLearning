@@ -59,8 +59,8 @@ def attributes_from(images,fileName):
     # writeCSV('patronesCirculaesByN_3_5',fileName,attr_PatronesCirc_ByN_3_5)
     # writeCSV('patronesCirculaesByN_5_9',fileName,attr_PatronesCirc_ByN_5_9)
 
-    func = [histogramaColor]
-    func_names = ['histogramaColor']
+    func = [lambda x: PatronesCircularByN(x,6,12),lambda x: PatronesCircularByN(x,8,12),lambda x: PatronesCircularByN(x,10,12)]
+    func_names = ['patronesCirculaesByN_6_12','patronesCirculaesByN_8_12','patronesCirculaesByN_10_12']
     attr=[]
     i=1
     j=1
@@ -115,7 +115,8 @@ def Patrones3x3ByN(greyImage):
     return patterns_dict
 
 def PatronesCircularByN(image,radius,points):
-	return mahotas.features.lbp(image, radius, points, ignore_zeros=False)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return mahotas.features.lbp(image, radius, points, ignore_zeros=False)
 
 def surf_extraccion(image,number_of_points,hessian=400):
     surf = cv2.SURF(hessian)
