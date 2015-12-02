@@ -14,13 +14,14 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import VotingClassifier
+from sklearn import metrics
 from sklearn.svm import SVC
 import cPickle as pickle
 
 def main(path,filename):
 
 	batchsT = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5']
-	batchsAux = ['histogramaByN','histogramaColor','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5','patronesCirculaesByN_6_12','patronesCirculaesByN_8_12','patronesCirculaesByN_10_12']
+	batchsAux = ['histogramaByN','histogramaColor','patronesCirculaesByN_2_5','patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_9','patronesCirculaesByN_3_9','patronesCirculaesByN_5_9','patronesCirculaesByN_3_5','patronesCirculaesByN_6_12','patronesCirculaesByN_8_12']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_2_9']
 	#batchs = ['patrones2x2ByN','patrones3x3ByN','patronesCirculaesByN_2_5','patronesCirculaesByN_3_5']
 	#for batch in batchsAux:
@@ -38,25 +39,34 @@ def main(path,filename):
 	
 	#X,y = load_images('/tmp/train/')
 	est = [RandomForest(),Boosting()]
-	for i in xrange(0,10):
+	for i in xrange(0,15):
 		est.append(Gradient(i))
-	for i in xrange(0,10):
+	for i in xrange(0,4):
 		est.append(SVM(i))
 
-	clf = VotingClassifier(estimators=est)
 	#scores = cross_validation.cross_val_score(clf, X, y, cv=5)
 	#print scores
+	clf = VotingClassifier(estimators=est)
+
+	clf.fit(X,y)
+	pickle.dump( clf, open( "clf_grande.p", "wb" ) )
+	return
 	X_train, X_test, Y_train, Y_test = cross_validation.train_test_split(X, y, test_size=0.2,random_state=777)
 	#print clf.sub_score(X_test,Y_test)
+	print 'start'
+	conf_matrix = metrics.confusion_matrix(Y_test,clf.predict(X_test))
+	print 'confution matrix'
+	print conf_matrix
+	return
 	for name,estim in est:
 		print name
-		estim.fit(X_train,Y_train)
-		print estim.score(X_test,Y_test)
-		#print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
+		#estim.fit(X_train,Y_train)
+		#print estim.score(X_test,Y_test)
+		print cross_validation.cross_val_score(estim, X, y, cv=5,n_jobs=-1)
 	print 'voter'
-	#print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
-	#return
-	clf.fit(X_train,Y_train)
+	print cross_validation.cross_val_score(clf, X, y, cv=5,n_jobs=-1)
+	return
+	#clf.fit(X_train,Y_train)
 	print clf.score(X_test,Y_test)
 
 	return
@@ -127,6 +137,15 @@ def Gradient(i=0):
 		return ('Gradient'+str(i),GradientBoostingClassifier(loss='exponential',learning_rate=0.2,random_state=i))
 	elif i==3:
 		return ('Gradient'+str(i),GradientBoostingClassifier(learning_rate=0.2,random_state=i))
+	elif i==4:
+		return ('Gradient'+str(i),GradientBoostingClassifier(n_estimators=80,learning_rate=0.2,random_state=i))
+	elif i==5:
+		return ('Gradient'+str(i),GradientBoostingClassifier(n_estimators=120,learning_rate=0.2,random_state=i))
+	elif i==6:
+		return ('Gradient'+str(i),GradientBoostingClassifier(max_depth=2,loss='exponential',learning_rate=0.2,random_state=i))
+	elif i==7:
+		return ('Gradient'+str(i),GradientBoostingClassifier(max_depth=4,loss='exponential',learning_rate=0.2,random_state=i))
+	
 	else:
 		return ('Gradient'+str(i),GradientBoostingClassifier(random_state=i))
 	tuned_parameters = [{'loss': ['deviance', 'exponential'],'n_estimators':[75,100,150] ,'learning_rate':[0.05,0.1,0.2]}]
@@ -135,13 +154,13 @@ def Gradient(i=0):
 
 def SVM(i=0):
 	if i==0:
-		return ('SVM'+str(i),SVC(random_state=i))
+		return ('SVM'+str(i),SVC(kernel='linear',shrinking=False,random_state=i))
 	elif i==1:
 		return ('SVM'+str(i),SVC(kernel='linear',random_state=i))
 	elif i==2:
 		return ('SVM'+str(i),SVC(kernel='linear',C=100,random_state=i))
 	elif i==3:
-		return ('SVM'+str(i),SVC(C=100,random_state=i))
+		return ('SVM'+str(i),SVC(kernel='linear',C=10,random_state=i))
 	elif i==4:
 		return ('SVM'+str(i),SVC(gamma=1e-3,random_state=i))
 	elif i==5:

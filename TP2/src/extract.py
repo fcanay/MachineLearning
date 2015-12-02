@@ -7,9 +7,7 @@ import csv
 import mahotas
 
 def main(path,filename):
-    print 'hola'
     load_images(path,filename)#'/tmp/train/')
-    print 'hola'
 
 def writeCSV(extractorName,batchName,attr):
     with open(batchName +'_'+ extractorName + '.csv', 'wb') as csvfile:
@@ -61,7 +59,9 @@ def attributes_from(images,fileName):
 
     func = [lambda x: PatronesCircularByN(x,6,12),lambda x: PatronesCircularByN(x,8,12),lambda x: PatronesCircularByN(x,10,12)]
     func_names = ['patronesCirculaesByN_6_12','patronesCirculaesByN_8_12','patronesCirculaesByN_10_12']
-    attr=[]
+    #func = [Patrones3x3ByN]
+    #attr=['patrones3x3ByN']
+    attr = []
     i=1
     j=1
     for f in func:
@@ -132,7 +132,7 @@ def oscuro(gris):
 
 def load_images(path,fileName):
     imageFileNames = getImageFileNames(path)
-    writeCSV('clases',fileName,get_clases_from(imageFileNames))
+    writeCSV('clases',fileName,imageFileNames)
     attributes_from(imageFileNames,fileName)
     # images = []
     # for myFile in imageFileNames:
@@ -140,7 +140,7 @@ def load_images(path,fileName):
     #     images.append(cv2.imread(myFile))
 
 def getImageFileNames(path):
-    imageFileNames = glob.glob(path +"*0.jpg")
+    imageFileNames = glob.glob(path +"*.jpg")
     print imageFileNames
     return imageFileNames
 
@@ -156,7 +156,7 @@ def get_clases_from(imageFileNames):
 
 print 'hello'
 if len(sys.argv) != 3:# and False:
-    print 'Usage: python src.py [path_to_images] [batch_name] '
+    print 'Usage: python extract.py [path_to_images] [batch_name] '
 else:
     path = sys.argv[1] #'/home/enano/train/train/'#(sys.argv[1])
     batchName = sys.argv[2]
